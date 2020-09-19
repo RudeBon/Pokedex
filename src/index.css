@@ -12,7 +12,7 @@ code {
     monospace;
 }
 
-ul {
+.pokemonList-ul {
   list-style-type: none;
   display: flex;
   flex-wrap: wrap;
@@ -21,11 +21,32 @@ ul {
   padding: 0
 }
 
- li {
+.pokemonList_li {
    margin: 10px; 
+   width: 200px;
+   flex: 1 0 240px
 } 
 
-.flexItem-card {
-  width: 200px;
-  flex: 1 0 240px
+ul {
+  padding:0;
+  list-style-type: none;
+}
+
+.moves-ul{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px
+}
+.pokeInfoGrid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px
+}
+/* .stats {
+  grid-row: 1 / span 2; 
+} */
+.stats-ul{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px
 }

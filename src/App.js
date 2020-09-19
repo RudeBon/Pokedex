@@ -1,31 +1,27 @@
 import React from 'react'
 import logo from './pictures/logo.png'
 import 'antd/dist/antd.css'
-import { Input, Layout } from 'antd'
+import { Layout} from 'antd'
 import PokemonList from './components/PokemonsList'
-import Pokemonjson from './tempPokemonList.json'
+import Filter from './components/Filter'
 
-const { Search } = Input
+// const {CheckableTag} = Tag;
+
 const { Header, Footer, Content } = Layout
 
-function App() {
+function App () {
   return (
     <div className='App'>
       <Layout>
         <Layout>
           <Header>
             <div className='logo'>
-              <img src={logo} style={{ height: '48px', width: 'auto' }} />
+              <img src={logo} style={{ height: '48px', width: 'auto' }} alt='logo'/>
             </div>
           </Header>
           <Content style={{ padding: '50px 50px' }}>
             <h1>Pokemons list</h1>
-            <Search
-              placeholder="Start typing pokemon's name"
-              onSearch={value => console.log(value)}
-              style={{ width: '60%' }}
-            />
-            <p>There is {Pokemonjson.count} pokemons</p>
+            <Filter />
             <PokemonList />
           </Content>
           <Footer style={{ textAlign: 'center' }}>Made by Ann Ryzhankova. Delivered with love </Footer>
