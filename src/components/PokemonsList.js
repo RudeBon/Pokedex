@@ -9,12 +9,12 @@ export default function PokemonList () {
   const pokemonStore = useContext(pokemonContext)
 
   useEffect(() => {
-    console.log('getPokemons 0')
     pokemonStore.getPokemons()
   }, [])
 
-  function getPokeCardStored () {
-    return pokemonStore.pokemons.slice(pokemonStore.pagination.offset, pokemonStore.pagination.offset + pokemonStore.pagination.limit).map((pokemon, index) =>
+  function getPokeCardStored () {    
+    let temp = pokemonStore.searchResult ?? pokemonStore.pokemons;
+    return temp.slice(pokemonStore.pagination.offset, pokemonStore.pagination.offset + pokemonStore.pagination.limit).map((pokemon, index) =>
       <li key={pokemon.name} className='pokemonList_li'>
         <PokemonCard
           pokemon={pokemon} key={index}
@@ -25,15 +25,11 @@ export default function PokemonList () {
 
   function onChange(pageNumber, limit) {
     pokemonStore.pagination = { ...pokemonStore.pagination, offset: pokemonStore.pagination.limit * (pageNumber - 1), limit:limit}
-    console.log('Page: ', pageNumber);
   }
 
   const PokeCardStored = pokemonStore.isLoading && pokemonStore.pokemons.map((pokemon) =>
     <li key={pokemon.name}>{pokemon.name}</li>
   )
-
-  console.log(PokeCardStored)
-  console.log('pokemonStore', !pokemonStore.isLoading && pokemonStore.pokemons.map(x => x.name))
 
   return useObserver(() => (
     <div>

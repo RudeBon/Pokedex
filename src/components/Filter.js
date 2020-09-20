@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { observer, useObserver } from 'mobx-react'
 import 'antd/dist/antd.css'
 import { Input, Select } from 'antd'
+import { pokemonContext } from '../stores/PokemonProvider'
 
 const { Search } = Input
 const { Option } = Select
 
-export default function Filter () {
+export default function Filter() {
+  const pokemonStore = useContext(pokemonContext)
   const [types, setTypes] = useState([])
-  const [selectedTags, setSelectedTags] = useState([])
   const url = 'https://pokeapi.co/api/v2/type'
 
   useEffect(() => {
@@ -21,17 +23,37 @@ export default function Filter () {
   const children = []
   types.forEach(type => children.push(<Option key={type.name}>{type.name}</Option>))
 
-  function handleChangeSelect (value) {
-    // setSelectedTags(prev => prev.push(value))
-    console.log(`selected ${value}`)
-    console.log(`set selected ${selectedTags}`)
+  function handleChangeSelect(value) {
+    if (value.length == 0) {      
+      pokemonStore.getPokemons();
+      // if (pokemonStore.searchResult.length > 0) {
+      //   pokemonStore.searchResult = pokemonStore.pokemons.filter(x => x.name.search(value.toLowerCase()) !== -1);
+      //   pokemonStore.count = pokemonStore.searchResult.length
+      // }
+      return 
+    }
+    pokemonStore.selectedTags = value
+    pokemonStore.clearPokemons();
+    pokemonStore.applyTags(pokemonStore.selectedTags)
+
+    // console.log(pokemonStore.pokemons)
+  };
+
+  function handleSearch(value) {
+    if (value === '') {
+      pokemonStore.searchResult = null;
+      pokemonStore.count = pokemonStore.pokemons.length
+      return 
+    }
+    pokemonStore.searchResult = pokemonStore.pokemons.filter(x => x.name.search(value.toLowerCase()) !== -1);
+    pokemonStore.count = pokemonStore.searchResult.length
   }
 
-  return (
+  return useObserver(() => (
     <div>
       <Search
         placeholder="Start typing pokemon's name"
-        onSearch={value => console.log(value)}
+        onSearch={handleSearch}
         style={{ width: '50%', minWidth: '300px' }}
       />
       <Select
@@ -45,5 +67,5 @@ export default function Filter () {
       </Select>
     </div>
 
-  )
+  ))
 }
