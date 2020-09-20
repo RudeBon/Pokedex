@@ -1,37 +1,49 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext  } from 'react'
 import PokemonCard from './PokemonCard'
+import { observer } from 'mobx-react'
+import { useObserver } from "mobx-react";
+import { pokemonContext } from "../stores/PokemonProvider";
 
 export default function PokemonList () {
-  const url = 'https://pokeapi.co/api/v2/pokemon'
-
-  const [count, setCount] = useState(null)
-  const [list, setList] = useState([])
+  const pokemonStore = useContext(pokemonContext);
 
   useEffect(() => {
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        setCount(data.count)
-        setList(data.results)
-      })
+      console.log('getPokemons 0');
+      pokemonStore.getPokemons();
   }, [])
 
-  const PokeCard = list.map((pokemon, index) =>
+  // const PokeCard = list.map((pokemon, index) =>
+  //   <li key={pokemon.name} className='pokemonList_li'>
+  //     <PokemonCard
+  //       pokemon={pokemon} key={index}
+  //     />
+  //   </li>
+  // )
+
+  function getPokeCardStored() {
+    return pokemonStore.pokemons.map((pokemon, index) =>
     <li key={pokemon.name} className='pokemonList_li'>
       <PokemonCard
         pokemon={pokemon} key={index}
       />
     </li>
   )
+  }
 
-  // console.log(pList.results)
-
-  return (
-    <div>
-      <p>There is {count} pokemons</p>
-      <ul className='pokemonList-ul'>
-        {PokeCard}
-      </ul>
-    </div>
+  const PokeCardStored = pokemonStore.isLoading && pokemonStore.pokemons.map((pokemon) =>
+    <li>{pokemon.name}</li> 
   )
+
+  console.log(PokeCardStored)
+  console.log('pokemonStore', !pokemonStore.isLoading && pokemonStore.pokemons.map(x => x.name))
+
+  return useObserver(() => (
+    <div>
+      <p>There is {pokemonStore.count} pokemons</p>
+      <ul className='pokemonList-ul'>        
+          {pokemonStore.isLoading ? (<li>Loading...</li>) : getPokeCardStored()}
+      </ul>
+      {/* {pokemonStore.isLoading ? ('da') : ('net')} */}
+    </div>
+  ))
 }
