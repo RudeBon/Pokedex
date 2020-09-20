@@ -30,7 +30,7 @@ export default function Filter () {
 
   function handleSearch (value) {
     pokemonStore.searchValue = value
-    pokemonStore.applyFilters();
+    pokemonStore.applyFilters()
   }
 
   return useObserver(() => (

@@ -13,13 +13,13 @@ export default function PokemonList () {
 
   function getPokemonCards () {
     return pokemonStore.applyPaginationToFiltered()
-          .map((pokemon, index) =>
-            <li key={pokemon.name} className='pokemonList_li'>
-              <PokemonCard
-                pokemon={pokemon} key={index}
-              />
-            </li>
-        )
+      .map((pokemon, index) =>
+        <li key={pokemon.name} className='pokemonList_li'>
+          <PokemonCard
+            pokemon={pokemon} key={index}
+          />
+        </li>
+      )
   }
 
   function onChange (pageNumber, limit) {

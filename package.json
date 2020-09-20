@@ -1,8 +1,8 @@
-{
-  "homepage":"http://RudeBon.github.io/Pokedex",
+{  
   "name": "pokedex",
   "version": "0.1.0",
   "private": true,
+  "homepage":"http://RudeBon.github.io/Pokedex",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
