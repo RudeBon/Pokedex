@@ -8,33 +8,14 @@ const { Panel } = Collapse  // modal
 
 export default function PokemonCard(props) {
     const [isLoading, setIsLoading] = useState(true)
-    const [avatar, setAvatar] = useState()
-    const [info, setInfo] = useState([])
     const pokemon = props.pokemon
     const [visible, setVisible] = useState(false) // modal
     const pokemonStore = useContext(pokemonContext);
 
-
-    // useEffect(async () => {
-    //     console.log('useEffectqwe');
-    //     // setIsLoading(true)
-    //     // fetch(pokemon.url)
-    //     //     .then(res => res.json())
-    //     //     .then(data => {
-    //     //         setInfo(data)
-    //     //         setAvatar(data.sprites.front_default)
-    //     //         setIsLoading(false)
-    //     //     });
-    //     (await pokemonStore.getSinglePokemon(pokemon.url))
-    //     setIsLoading(false)
-    // }, [])
-
     useEffect(() => {
         async function fetchData() {
-          // You can await here
             await pokemonStore.getSinglePokemon(pokemon.url);
             setIsLoading(false);
-          // ...
         }
         fetchData();
       }, []);
@@ -44,34 +25,33 @@ export default function PokemonCard(props) {
     }
 
     function getPokemonInfo() {
-        // console.log("getPokemonInfo", isLoading);
-        // console.log("getPokemonInfo", JSON.stringify(!isLoading && pokemonStore.pokemonDetails));
-        // console.log("getPokemonInfo", pokemon.url);
+        // TODO: consider to change url-key to id and object to array
         return pokemonStore.pokemonsInfo[pokemon.url];
     }
 
-    // console.log('card', info && pokemonStore.pokemonsInfo[pokemon.url].stats && pokemonStore.pokemonsInfo[pokemon.url].stats/*.stats[0].stat.name*/);
-    // console.log('isLoading', isLoading);
-
+    
     return (
         <div>
-            <Card title={pokemon.name} extra={<Avatar size={40} src={!isLoading && getPokemonInfo().sprites.front_default} />} 
-                onClick={openModal}>
-                {/* <p>Base experience: {!isLoading && !!getPokemonInfo().stats && getPokemonInfo().stats[0]}</p> */}
+            <Card 
+                title={pokemon.name} 
+                extra={<Avatar size={40} src={!isLoading && getPokemonInfo().sprites.front_default} />} 
+                onClick={openModal}
+            >                
                 <div>
                     <Divider orientation='left'>Stats</Divider>
-                    <ul style={{ 'list-style-type': 'none' }}>
+                    <ul style={{ 'listStyleType': 'none' }}>
                         {
-                            !isLoading &&
-                            getPokemonInfo().stats.map(x => <li> {`${x.stat.name}: ${x.base_stat}`}</li>)
+                            !isLoading 
+                            && getPokemonInfo().stats.map(x => 
+                                <li key={x.stat.name}>{`${x.stat.name}: ${x.base_stat}`}</li>)
                         }
                     </ul>
                 </div>
                 <div>
                     <Divider orientation='left'>Types</Divider>
                     {
-                        !isLoading &&
-                        getPokemonInfo().types.map(x => <Tag>{x.type.name}</Tag>)
+                        !isLoading 
+                        && getPokemonInfo().types.map(x => <Tag key={x.type.name}>{x.type.name}</Tag>)
                     }
                 </div>
 
@@ -84,7 +64,7 @@ export default function PokemonCard(props) {
                 onCancel={openModal}
             >
                 <Avatar size={64} src={!isLoading && getPokemonInfo().sprites.front_default} />
-                {!isLoading && getPokemonInfo().types.map(x => <Tag>{x.type.name}</Tag>)}
+                {!isLoading && getPokemonInfo().types.map(x => <Tag key={x.type.name}>{x.type.name}</Tag>)}
                 <div className="stats">
                     <h3>Stats</h3>
                     <ul className="stats-ul">
@@ -92,9 +72,7 @@ export default function PokemonCard(props) {
                             !isLoading &&
                             getPokemonInfo().stats
                                 .map(x => 
-                                    <li> 
-                                        {`${x.stat.name}: ${x.base_stat}`}
-                                    </li>) // add key attribute
+                                    <li key={x.stat.name}>{`${x.stat.name}: ${x.base_stat}`}</li>) 
                         }
                     </ul>
                 </div>
@@ -115,7 +93,7 @@ export default function PokemonCard(props) {
                             {
                                 !isLoading &&
                                 getPokemonInfo().abilities.map(x => 
-                                    <li key={x.ability.name}>{x.ability.name}</li>) // add key attribute
+                                    <li key={x.ability.name}>{x.ability.name}</li>)
                             }
                         </ul>
                     </div>
@@ -125,7 +103,7 @@ export default function PokemonCard(props) {
                             {
                                 !isLoading &&
                                 getPokemonInfo().forms.map(x => 
-                                    <li key={x.name}>{x.name}</li>) // add key attribute
+                                    <li key={x.name}>{x.name}</li>)
                             }
                         </ul>
                     </div>
@@ -134,8 +112,7 @@ export default function PokemonCard(props) {
                         <ul className="items-ul">
                             {
                                 !isLoading &&
-                                getPokemonInfo().held_items.map(x => <li key={x.item.name}>{x.item.name}</li>)
-                                // getPokemonInfo().held_items.length == 0 ? <li>none</li> : getPokemonInfo().held_items.map(x => <li key={x.item.name}>{x.item.name}</li>)                                
+                                getPokemonInfo().held_items.map(x => <li key={x.item.name}>{x.item.name}</li>)                                                             
                             }
                         </ul>
                     </div>
@@ -145,7 +122,7 @@ export default function PokemonCard(props) {
                         <ul className="moves-ul">
                             {
                                 !isLoading &&
-                                getPokemonInfo().moves.map(x => <li key={x.move.name}> {x.move.name}</li>) //  add key attribute
+                                getPokemonInfo().moves.map(x => <li key={x.move.name}> {x.move.name}</li>)
                             }
                         </ul>
                     </Panel>

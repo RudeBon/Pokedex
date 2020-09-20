@@ -12,14 +12,6 @@ export default function PokemonList () {
       pokemonStore.getPokemons();
   }, [])
 
-  // const PokeCard = list.map((pokemon, index) =>
-  //   <li key={pokemon.name} className='pokemonList_li'>
-  //     <PokemonCard
-  //       pokemon={pokemon} key={index}
-  //     />
-  //   </li>
-  // )
-
   function getPokeCardStored() {
     return pokemonStore.pokemons.map((pokemon, index) =>
     <li key={pokemon.name} className='pokemonList_li'>
@@ -43,7 +35,6 @@ export default function PokemonList () {
       <ul className='pokemonList-ul'>        
           {pokemonStore.isLoading ? (<li>Loading...</li>) : getPokeCardStored()}
       </ul>
-      {/* {pokemonStore.isLoading ? ('da') : ('net')} */}
     </div>
   ))
 }
