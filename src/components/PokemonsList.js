@@ -12,11 +12,7 @@ export default function PokemonList () {
   }, [])
 
   function getPokemonCards () {
-    // TODO: Consider to remove ? and slice to store
-    return (pokemonStore.hasSearchResult() 
-        ? pokemonStore.searchResult 
-        : pokemonStore.pokemons)
-          .slice(pokemonStore.pagination.offset, pokemonStore.pagination.offset + pokemonStore.pagination.limit)
+    return pokemonStore.applyPaginationToFiltered()
           .map((pokemon, index) =>
             <li key={pokemon.name} className='pokemonList_li'>
               <PokemonCard
@@ -27,7 +23,7 @@ export default function PokemonList () {
   }
 
   function onChange (pageNumber, limit) {
-    pokemonStore.pagination = { ...pokemonStore.pagination, offset: pokemonStore.pagination.limit * (pageNumber - 1), limit: limit }
+    pokemonStore.setPaginationData(pageNumber, limit)
   }
 
   return useObserver(() => (

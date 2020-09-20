@@ -1,33 +1,32 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, {useContext } from 'react'
 import 'antd/dist/antd.css'
-import { Card, Avatar, Tag, Divider, Modal, Collapse } from 'antd' // modal
+import { Avatar, Tag, Modal, Collapse } from 'antd'
 import { pokemonContext } from '../stores/PokemonProvider'
-const { Panel } = Collapse // modal
+const { Panel } = Collapse
 
 export default function PokemonModal (props) {
     const pokemonStore = useContext(pokemonContext)
-    const visible = props.visible
+    const pokemon = props.pokemon
 
-    
     return(
         <>
             <Modal
-                title={getPokemonInfo().name}
+                title={pokemonStore.capitalize(pokemon.name)}
                 centered
-                visible={visible}
-                onOk={openModal}
-                onCancel={openModal}
+                visible={props.visible}
+                onOk={props.handleModal}
+                onCancel={props.handleModal}
             >
-                <Avatar size={64} src={!isLoading && getPokemonInfo().sprites.front_default} />
-                {!isLoading && getPokemonInfo().types.map(x => <Tag key={x.type.name}>{x.type.name}</Tag>)}
+                <Avatar size={64} src={props.getPokemonInfo().sprites.front_default} />
+                {props.getPokemonInfo().types.map(x => <Tag color={pokemonStore.getTagColor(x.type.name)} key={x.type.name}>{x.type.name}</Tag>)}
                 <div className='stats'>
                     <h3>Stats</h3>
                     <ul className='stats-ul'>
                         {
-                            !isLoading &&
-                            getPokemonInfo().stats
+                            
+                            props.getPokemonInfo().stats
                                 .map(x =>
-                                    <li key={x.stat.name}>{`${x.stat.name}: ${x.base_stat}`}</li>)
+                                    <li key={x.stat.name}>{`${pokemonStore.capitalize(x.stat.name)}: ${x.base_stat}`}</li>)
                         }
                     </ul>
                 </div>
@@ -35,10 +34,10 @@ export default function PokemonModal (props) {
                     <div className='characteristics'>
                         <h3>Characteristics</h3>
                         {
-                            !isLoading &&
+                            
                             <ul className='characteristics-ul'>
-                                <li>{`weight: ${getPokemonInfo().weight}`}</li>
-                                <li>{`height: ${getPokemonInfo().height}`}</li>
+                                <li>{`Weight: ${props.getPokemonInfo().weight}`}</li>
+                                <li>{`Height: ${props.getPokemonInfo().height}`}</li>
                             </ul>
                         }
                     </div>
@@ -46,9 +45,9 @@ export default function PokemonModal (props) {
                         <h3>Abilities</h3>
                         <ul className='abilities-ul'>
                             {
-                                !isLoading &&
-                                getPokemonInfo().abilities.map(x =>
-                                    <li key={x.ability.name}>{x.ability.name}</li>)
+                                
+                                props.getPokemonInfo().abilities.map(x =>
+                                    <li key={x.ability.name}>{pokemonStore.capitalize(x.ability.name)}</li>)
                             }
                         </ul>
                     </div>
@@ -56,9 +55,9 @@ export default function PokemonModal (props) {
                         <h3>Forms</h3>
                         <ul className='forms-ul'>
                             {
-                                !isLoading &&
-                                getPokemonInfo().forms.map(x =>
-                                    <li key={x.name}>{x.name}</li>)
+                                
+                                props.getPokemonInfo().forms.map(x =>
+                                    <li key={x.name}>{pokemonStore.capitalize(x.name)}</li>)
                             }
                         </ul>
                     </div>
@@ -66,8 +65,8 @@ export default function PokemonModal (props) {
                         <h3>Held Items</h3>
                         <ul className='items-ul'>
                             {
-                                !isLoading &&
-                                getPokemonInfo().held_items.map(x => <li key={x.item.name}>{x.item.name}</li>)
+                                
+                                props.getPokemonInfo().held_items.map(x => <li key={x.item.name}>{pokemonStore.capitalize(x.item.name)}</li>)
                             }
                         </ul>
                     </div>
@@ -76,8 +75,8 @@ export default function PokemonModal (props) {
                     <Panel header='Moves' key='1'>
                         <ul className='moves-ul'>
                             {
-                                !isLoading &&
-                                getPokemonInfo().moves.map(x => <li key={x.move.name}> {x.move.name}</li>)
+                                
+                                props.getPokemonInfo().moves.map(x => <li key={x.move.name}> {pokemonStore.capitalize(x.move.name)}</li>)
                             }
                         </ul>
                     </Panel>

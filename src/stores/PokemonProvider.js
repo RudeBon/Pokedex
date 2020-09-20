@@ -14,7 +14,7 @@ export const PokemonProvider = ({ children }) => {
       offset: 0
     },
     selectedTags: [],
-    searchResult: [],
+    filteredResult: [],
     searchValue: '',
     count: 0,
     isLoading: false,
@@ -43,11 +43,23 @@ export const PokemonProvider = ({ children }) => {
     },
     /* actions here */
     
-    hasSearchResult() {
-      return store.searchResult && store.searchResult.length > 0
+    hasFilteredResult() {
+      return store.filteredResult && store.filteredResult.length > 0
     },
-    getSearchOrAll() {
-      return store.hasSearchResult() ? store.searchResult : store.pokemons;
+    getFilteredOrAll() {
+      return store.hasFilteredResult() ? store.filteredResult : store.pokemons;
+    },
+    setPaginationData(pageNumber, limit) {
+      store.pagination = { 
+        ...store.pagination, 
+        offset: store.pagination.limit * (pageNumber - 1), 
+        limit: limit 
+      }
+    },
+    applyPaginationToFiltered() {
+      return store.getFilteredOrAll()
+        .slice(store.pagination.offset, 
+          store.pagination.offset + store.pagination.limit)
     },
     async applyTags() {
       if(store.selectedTags.length === 0) {
@@ -64,7 +76,7 @@ export const PokemonProvider = ({ children }) => {
               tagsResultSet = [...new Set([...tagsResultSet, ...pokemonsWithThisTag])]
             })
             .then(() => {      
-              store.searchResult = tagsResultSet;
+              store.filteredResult = tagsResultSet;
             })
         } catch (e) {
           store.setError(e)
@@ -77,14 +89,14 @@ export const PokemonProvider = ({ children }) => {
         return;
       }
 
-      store.searchResult = store.searchResult
+      store.filteredResult = store.filteredResult
           .filter(x => x.name.search(store.searchValue.toLowerCase()) !== -1);
     },
     async applyFilters() {
-      store.searchResult = store.pokemons;
+      store.filteredResult = store.pokemons;
       await this.applyTags();
       await this.applySearch();
-      store.count = store.searchResult.length
+      store.count = store.filteredResult.length
     },
     async getPokemons() {
       store.isLoading = true
@@ -125,10 +137,12 @@ export const PokemonProvider = ({ children }) => {
     capitalize(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
-    clearPokemons() {
-      store.pokemons = []
+    getTagColor(tagName){
+      if (store.tagColors[tagName] == undefined) {
+          return '#C1C1C1' 
+      }
+      return store.tagColors[tagName]
     }
-    /* computed values i.e. derived state here */
   }))
   return <pokemonContext.Provider value={store}>{children}</pokemonContext.Provider>
 }
