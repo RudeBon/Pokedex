@@ -12,15 +12,18 @@ export default function PokemonList () {
   }, [])
 
   function getPokemonCards () {
-    return (pokemonStore.searchResult ?? pokemonStore.pokemons)
-      .slice(pokemonStore.pagination.offset, pokemonStore.pagination.offset + pokemonStore.pagination.limit)
-      .map((pokemon, index) =>
-        <li key={pokemon.name} className='pokemonList_li'>
-          <PokemonCard
-            pokemon={pokemon} key={index}
-          />
-        </li>
-    )
+    // TODO: Consider to remove ? and slice to store
+    return (pokemonStore.hasSearchResult() 
+        ? pokemonStore.searchResult 
+        : pokemonStore.pokemons)
+          .slice(pokemonStore.pagination.offset, pokemonStore.pagination.offset + pokemonStore.pagination.limit)
+          .map((pokemon, index) =>
+            <li key={pokemon.name} className='pokemonList_li'>
+              <PokemonCard
+                pokemon={pokemon} key={index}
+              />
+            </li>
+        )
   }
 
   function onChange (pageNumber, limit) {

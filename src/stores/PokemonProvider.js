@@ -14,7 +14,7 @@ export const PokemonProvider = ({ children }) => {
       offset: 0
     },
     selectedTags: [],
-    searchResult: null,
+    searchResult: [],
     searchValue: '',
     count: 0,
     isLoading: false,
@@ -42,20 +42,49 @@ export const PokemonProvider = ({ children }) => {
       shadow:'#2B2B2B'
     },
     /* actions here */
-    async applyTags(tags) {
-      tags.forEach(tag => {
+    
+    hasSearchResult() {
+      return store.searchResult && store.searchResult.length > 0
+    },
+    getSearchOrAll() {
+      return store.hasSearchResult() ? store.searchResult : store.pokemons;
+    },
+    async applyTags() {
+      if(store.selectedTags.length === 0) {
+        return;
+      }
+
+      let tagsResultSet = [];
+      for (const tag of store.selectedTags) {
         try {
-          fetch(`https://pokeapi.co/api/v2/type/${tag}`)
+          await fetch(`https://pokeapi.co/api/v2/type/${tag}`)
             .then(res => res.json())
             .then(data => {
-              const newPokemons = data.pokemon.map(x => x.pokemon)
-              store.pokemons = [...new Set([...store.pokemons, ...newPokemons])]
-              store.count = store.pokemons.length
+              const pokemonsWithThisTag = data.pokemon.map(x => x.pokemon)
+              tagsResultSet = [...new Set([...tagsResultSet, ...pokemonsWithThisTag])]
+            })
+            .then(() => {      
+              store.searchResult = tagsResultSet;
             })
         } catch (e) {
           store.setError(e)
         }
-      })
+      }
+    },
+    async applySearch() {
+      console.log('searchValue', store.searchValue);
+      if(store.searchValue == '') {
+        return;
+      }
+
+      store.searchResult = store.searchResult
+          .filter(x => x.name.search(store.searchValue.toLowerCase()) !== -1);
+    },
+    async applyFilters() {
+      store.searchResult = store.pokemons;
+      await this.applyTags();
+      await this.applySearch();
+      store.count = store.searchResult.length
     },
     async getPokemons() {
       store.isLoading = true

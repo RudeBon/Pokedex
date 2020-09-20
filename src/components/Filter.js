@@ -24,30 +24,13 @@ export default function Filter () {
   types.forEach(type => children.push(<Option key={type.name}>{type.name}</Option>))
 
   function handleChangeSelect (value) {
-    if (value.length === 0) {
-      pokemonStore.getPokemons()
-      console.log(pokemonStore.pokemons);
-      // if (pokemonStore.searchResult.length > 0) {
-      //   pokemonStore.searchResult = pokemonStore.pokemons.filter(x => x.name.search(pokemonStore.searchValue.toLowerCase()) !== -1);
-      //   pokemonStore.count = pokemonStore.searchResult.length
-      // }
-      return
-    }
     pokemonStore.selectedTags = value
-    pokemonStore.clearPokemons()
-    pokemonStore.applyTags(pokemonStore.selectedTags)
+    pokemonStore.applyFilters()
   };
 
   function handleSearch (value) {
     pokemonStore.searchValue = value
-    console.log(pokemonStore.searchValue)  //
-    if (value === '') {
-      pokemonStore.searchResult = null
-      pokemonStore.count = pokemonStore.pokemons.length      
-      return
-    }
-    pokemonStore.searchResult = pokemonStore.pokemons.filter(x => x.name.search(value.toLowerCase()) !== -1)
-    pokemonStore.count = pokemonStore.searchResult.length
+    pokemonStore.applyFilters();
   }
 
   return useObserver(() => (
