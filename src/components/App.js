@@ -4,13 +4,13 @@ import 'antd/dist/antd.css'
 import { Layout } from 'antd'
 import PokemonList from './PokemonsList'
 import Filter from './Filter'
-import { PokemonProvider } from "../stores/PokemonProvider";
+import { PokemonProvider } from '../stores/PokemonProvider'
 
 // const {CheckableTag} = Tag;
 
 const { Header, Footer, Content } = Layout
 
-function App() {
+function App () {
   return (
     <div className='App'>
       <Layout>
@@ -23,7 +23,7 @@ function App() {
           <Content style={{ padding: '50px 60px' }}>
             <h1>Pokemons list</h1>
             <PokemonProvider>
-            <Filter />
+              <Filter />
               <PokemonList />
             </PokemonProvider>
           </Content>

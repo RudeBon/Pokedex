@@ -21,8 +21,8 @@ export default function Filter () {
   const children = []
   types.forEach(type => children.push(<Option key={type.name}>{type.name}</Option>))
 
-  function handleChangeSelect (value) {      
-    // setSelectedTags(prev => prev.push(value))    
+  function handleChangeSelect (value) {
+    // setSelectedTags(prev => prev.push(value))
     console.log(`selected ${value}`)
     console.log(`set selected ${selectedTags}`)
   }

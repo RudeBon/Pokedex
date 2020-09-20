@@ -1,58 +1,61 @@
-import React, { createContext } from "react";
-import { useLocalStore } from "mobx-react-lite";
+import React, { createContext } from 'react'
+import { useLocalStore } from 'mobx-react-lite'
 
 export const PokemonProvider = ({ children }) => {
-  const url = 'https://pokeapi.co/api/v2/pokemon';
+  const url = 'https://pokeapi.co/api/v2/pokemon'
   const store = useLocalStore(() => ({
 
-    /*observables here*/
+    /* observables here */
     pokemons: [],
-    pokemonsInfo: {}, 
-    pokemonDetails: [],  //TODO
+    pokemonsInfo: {},
+    pokemonDetails: [], // TODO
+    pagination: {
+      limit: 20,
+      offset: 0
+    },
     count: 0,
     isLoading: false,
-    error: "",
-    /*actions here*/
+    error: '',
+    /* actions here */
     async getPokemons() {
-      store.isLoading = true;
+      store.isLoading = true
       try {
         fetch(url)
           .then(res => res.json())
           .then(data => {
-            store.count = data.count;
-            store.pokemons = data.results;
+            store.count = data.count
           })
-          .then(() =>
-            store.isLoading = false
+          .then(
+            fetch(`${url}?offset=0&limit=${store.count}`)
+              .then(res => res.json())
+              .then(data => {
+                store.pokemons = data.results
+              })
+              .then(() => {
+                store.isLoading = false
+                console.log(store.count);
+              }
+              )
           )
+
       } catch (e) {
-        store.setError(e);
+        store.setError(e)
       }
-    },
-    async doNothing(url) {
-      store.isLoading = true;
-      try {
-      } catch (e) {
-        store.setError(e);
-      }
-      store.isLoading = false
     },
     async getSinglePokemon(url) {
       try {
         await fetch(url)
           .then(res => res.json())
           .then(data => {
-            store.pokemonsInfo[url] = data;
+            store.pokemonsInfo[url] = data
             // store.pokemonDetails.push({id: data.id, details: data});
-            
           })
-          
       } catch (e) {
-        store.setError(e);
+        store.setError(e)
       }
     }
-    /*computed values i.e. derived state here*/
-  }));
-  return <pokemonContext.Provider value={store}>{children}</pokemonContext.Provider>;
-};
-export const pokemonContext = createContext();
+    /* computed values i.e. derived state here */
+  }))
+  return <pokemonContext.Provider value={store}>{children}</pokemonContext.Provider>
+}
+export const pokemonContext = createContext()
