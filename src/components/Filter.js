@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { observer, useObserver } from 'mobx-react'
+import { useObserver } from 'mobx-react'
 import 'antd/dist/antd.css'
 import { Input, Select } from 'antd'
 import { pokemonContext } from '../stores/PokemonProvider'
@@ -7,7 +7,7 @@ import { pokemonContext } from '../stores/PokemonProvider'
 const { Search } = Input
 const { Option } = Select
 
-export default function Filter() {
+export default function Filter () {
   const pokemonStore = useContext(pokemonContext)
   const [types, setTypes] = useState([])
   const url = 'https://pokeapi.co/api/v2/type'
@@ -23,29 +23,30 @@ export default function Filter() {
   const children = []
   types.forEach(type => children.push(<Option key={type.name}>{type.name}</Option>))
 
-  function handleChangeSelect(value) {
-    if (value.length == 0) {      
-      pokemonStore.getPokemons();
+  function handleChangeSelect (value) {
+    if (value.length === 0) {
+      pokemonStore.getPokemons()
+      console.log(pokemonStore.pokemons);
       // if (pokemonStore.searchResult.length > 0) {
-      //   pokemonStore.searchResult = pokemonStore.pokemons.filter(x => x.name.search(value.toLowerCase()) !== -1);
+      //   pokemonStore.searchResult = pokemonStore.pokemons.filter(x => x.name.search(pokemonStore.searchValue.toLowerCase()) !== -1);
       //   pokemonStore.count = pokemonStore.searchResult.length
       // }
-      return 
+      return
     }
     pokemonStore.selectedTags = value
-    pokemonStore.clearPokemons();
+    pokemonStore.clearPokemons()
     pokemonStore.applyTags(pokemonStore.selectedTags)
-
-    // console.log(pokemonStore.pokemons)
   };
 
-  function handleSearch(value) {
+  function handleSearch (value) {
+    pokemonStore.searchValue = value
+    console.log(pokemonStore.searchValue)  //
     if (value === '') {
-      pokemonStore.searchResult = null;
-      pokemonStore.count = pokemonStore.pokemons.length
-      return 
+      pokemonStore.searchResult = null
+      pokemonStore.count = pokemonStore.pokemons.length      
+      return
     }
-    pokemonStore.searchResult = pokemonStore.pokemons.filter(x => x.name.search(value.toLowerCase()) !== -1);
+    pokemonStore.searchResult = pokemonStore.pokemons.filter(x => x.name.search(value.toLowerCase()) !== -1)
     pokemonStore.count = pokemonStore.searchResult.length
   }
 

@@ -6,8 +6,6 @@ import PokemonList from './PokemonsList'
 import Filter from './Filter'
 import { PokemonProvider } from '../stores/PokemonProvider'
 
-// const {CheckableTag} = Tag;
-
 const { Header, Footer, Content } = Layout
 
 function App () {
